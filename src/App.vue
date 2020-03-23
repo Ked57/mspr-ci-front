@@ -8,6 +8,13 @@
   </div>
 </template>
 
+<script lang="ts">
+import "@/assets/css/tailwind.css";
+export default {
+  name: "App"
+};
+</script>
+
 <style lang="scss">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
