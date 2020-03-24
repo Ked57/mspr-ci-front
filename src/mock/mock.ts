@@ -42,12 +42,12 @@ export const mock: {
   },
   "https://user.louisperdereau.fr/user/1": {
     GET: {
-      auth_id: "1",
-      user_name: "user@example.com"
+      auth_id: "user@example.com",
+      user_name: "user"
     },
     PUT: {
-      auth_id: "1",
-      user_name: "user@example.com"
+      auth_id: "user@example.com",
+      user_name: "user"
     }
   }
 };
