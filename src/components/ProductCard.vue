@@ -41,7 +41,7 @@
         <span
           class="block bg-white rounded-full text-xs font-bold px-3 py-2 mx-1 leading-none flex items-center"
           :class="[textColor]"
-          >{{ product.unitPrice }}€</span
+          >{{ product.price }}€</span
         >
       </div>
     </div>
