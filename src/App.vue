@@ -10,10 +10,15 @@
 <script lang="ts">
 import "@/assets/css/tailwind.css";
 import Navbar from "./components/Navbar.vue";
+import { ACTIONS } from "./store/actions-definition";
+import store from "./store";
 export default {
   name: "App",
   components: {
     Navbar
+  },
+  mounted() {
+    store.dispatch(ACTIONS.SET_PRODUCTS);
   }
 };
 </script>

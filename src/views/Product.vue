@@ -10,7 +10,7 @@
         <hr class="py-0 my-0 border border-grey-lighter" />
         <div class="py-8">
           <div class="flex items-top">
-            <div class="w-full flex justify-center items-center">
+            <div v-if="product" class="w-full flex justify-center items-center">
               <Product :product="product" />
             </div>
             <div class="w-full flex justify-center items-center">
@@ -18,7 +18,7 @@
             </div>
           </div>
         </div>
-        <a href="#">
+        <a href="/cart" v-on:click="onAddToCartClicked">
           <div
             class="py-8 bg-grey-lighter hover:bg-grey-light text-indigo-darker rounded rounded-t-none text-center uppercase font-bold flex items-center justify-center"
           >
@@ -44,50 +44,25 @@
 
 <script>
 import Product from "@/components/ProductCard";
+import store from "../store";
+import router from "../router";
+import { ACTIONS } from "../store/actions-definition";
 export default {
   name: "Products",
   components: {
     Product
   },
   data() {
-    return {
-      // this needs to be move to the store ASAP
-      product: [
-        {
-          id: 1,
-          name: "Peace Lily",
-          unitPrice: 30,
-          description: "A nice plant",
-          category: "Indoor Plant",
-          color: "red",
-          logoUrl:
-            "https://user-images.githubusercontent.com/2805249/64069899-8bdaa180-cc97-11e9-9b19-1a9e1a254c18.png"
-        },
-        {
-          id: 2,
-          name: "Hand Sanitizer",
-          unitPrice: 3000,
-          description: "Rare remaining of hand sanitizer",
-          category: "Healthcare",
-          color: "blue",
-          logoUrl:
-            "https://mspr-ci-products.s3.fr-par.scw.cloud/person-holding-hand-sanitizer-3962331-removebg-preview.png"
-        },
-        {
-          id: 3,
-          name: "Plate",
-          unitPrice: 10,
-          description: "A nice plate",
-          category: "Kitchen",
-          color: "orange",
-          logoUrl:
-            "https://mspr-ci-products.s3.fr-par.scw.cloud/flatlay-photography-of-white-ceramic-bowl-2611817-removebg-preview.png"
-        }
-      ].filter(p => p.id === Number(this.$router.currentRoute.params.id))[0]
-    };
+    return {};
   },
-  mounted() {
-    console.log("id", this.$router.currentRoute.params.id);
+  computed: {
+    product: () =>
+      store.state.products.find(p => p.id === router.currentRoute.params.id)
+  },
+  methods: {
+    onAddToCartClicked() {
+      store.dispatch(ACTIONS.ADD_PRODUCT_TO_CART, this.product);
+    }
   }
 };
 </script>
