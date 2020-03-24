@@ -53,7 +53,6 @@ export default new Vuex.Store<State>({
         ),
         product
       ];
-      console.log(state.cart);
     },
     [MUTATIONS.REMOVE_PRODUCT_FROM_CART]: (state, payload: Product) => {
       if (!state.cart) {
@@ -80,13 +79,10 @@ export default new Vuex.Store<State>({
         console.error({ message: "Invalid input" });
         return;
       }
+      console.log("payload", payload);
       const [user, err] = await of(
         fetcher(`${USER_API_URL}/user/${payload}`, { method: "GET" })
       );
-      if (err) {
-        console.error(err);
-        return;
-      }
       if (!user) {
         const [createdUser, err] = await of(
           fetcher(`${USER_API_URL}/user`, {

@@ -6,7 +6,7 @@ export const mock: {
   "https://cart.louisperdereau.fr/products": {
     GET: [
       {
-        id: 1,
+        id: "qskfqksfnqgnqnkgqsre",
         name: "Peace Lily",
         price: 30,
         description: "A nice plant",
@@ -17,7 +17,7 @@ export const mock: {
           "https://user-images.githubusercontent.com/2805249/64069899-8bdaa180-cc97-11e9-9b19-1a9e1a254c18.png"
       },
       {
-        id: 2,
+        id: "qosfqognqjnunegbgdshgbhdg",
         name: "Hand Sanitizer",
         price: 3000,
         description: "Rare remaining of hand sanitizer",
@@ -28,7 +28,7 @@ export const mock: {
           "https://mspr-ci-products.s3.fr-par.scw.cloud/person-holding-hand-sanitizer-3962331-removebg-preview.png"
       },
       {
-        id: 3,
+        id: "qsgnjgnrjgnjlfdskfslei",
         name: "Plate",
         price: 10,
         description: "A nice plate",
@@ -40,11 +40,13 @@ export const mock: {
       }
     ]
   },
-  "https://user.louisperdereau.fr/user/1": {
+  "https://user.louisperdereau.fr/user/user@example.com": {
     GET: {
       auth_id: "user@example.com",
       user_name: "user"
-    },
+    }
+  },
+  "https://user.louisperdereau.fr/user": {
     PUT: {
       auth_id: "user@example.com",
       user_name: "user"
