@@ -5,7 +5,7 @@ import { isProduct, isUser } from "@/types";
 describe("store", () => {
   it("action gets and sets products", async () => {
     await store.dispatch(ACTIONS.SET_PRODUCTS);
-    expect(store.state.products.every(p => isProduct(p)));
+    expect(store.state.products.every(p => isProduct(p) && p.vat));
   });
   it("action gets and sets user when already exists", async () => {
     await store.dispatch(ACTIONS.SET_USER, "user@example.com");
