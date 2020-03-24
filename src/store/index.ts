@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import VuexPersistence from "vuex-persist";
 import { of } from "await-of";
 import { State, Product, User, Vat } from "@/types";
 import { MUTATIONS } from "./mutations-definition";
@@ -23,6 +24,9 @@ const fetcher = useMock
       }
       return await result.json();
     };
+const vuexLocal = new VuexPersistence<State>({
+  storage: window.localStorage
+});
 
 Vue.use(Vuex);
 
@@ -32,24 +36,49 @@ export default new Vuex.Store<State>({
   },
   mutations: {
     [MUTATIONS.SET_PRODUCTS]: (state, payload: Product[]) => {
-      state.products = [...state.products, ...payload];
+      state.products = payload;
     },
     [MUTATIONS.SET_USER]: (state, payload: User) => {
       state.user = payload;
     },
     [MUTATIONS.ADD_PRODUCT_TO_CART]: (state, payload: Product) => {
       const existingProduct = state.cart?.products.find(
-        p => p.product.name === payload.name
+        p => p.product.id === payload.id
       );
       const product = existingProduct
-        ? { ...existingProduct, quantity: existingProduct.quantity++ }
-        : { product: payload, quantity: 1 };
+        ? { ...existingProduct, quantity: existingProduct.quantity + 1 }
+        : {
+            product: payload,
+            quantity: 1,
+            index: (state.cart?.products.length || -1) + 1
+          };
       state.cart = !state.cart
         ? { products: [], createdAt: new Date() }
         : state.cart;
       state.cart.products = [
         ...state.cart?.products.filter(
-          p => p.product.name !== product.product.name
+          p => p.product.id !== product.product.id
+        ),
+        product
+      ];
+      // .sort((a, b) => a.index - b.index);
+    },
+    [MUTATIONS.SUBSTRACT_PRODUCT_FROM_CART]: (state, payload: Product) => {
+      const existingProduct = state.cart?.products.find(
+        p => p.product.id === payload.id
+      );
+      const product = existingProduct
+        ? { ...existingProduct, quantity: existingProduct.quantity - 1 }
+        : undefined;
+      if (!product) {
+        return;
+      }
+      state.cart = !state.cart
+        ? { products: [], createdAt: new Date() }
+        : state.cart;
+      state.cart.products = [
+        ...state.cart?.products.filter(
+          p => p.product.id !== product.product.id
         ),
         product
       ];
@@ -58,18 +87,9 @@ export default new Vuex.Store<State>({
       if (!state.cart) {
         return;
       }
-      state.cart.products = [
-        ...state.cart.products.filter(p => p.product.name !== payload.name)
-      ];
-    },
-    [MUTATIONS.SET_VAT_FOR_PRODUCT]: (
-      state,
-      payload: { product: Product; vat: Vat }
-    ) => {
-      state.products = [
-        ...state.products,
-        { ...payload.product, vat: payload.vat }
-      ];
+      state.cart.products = state.cart.products
+        .filter(p => p.product.id !== payload.id)
+        .map((p, index) => ({ ...p, index }));
     }
   },
   actions: {
@@ -82,21 +102,24 @@ export default new Vuex.Store<State>({
         return;
       }
       context.commit(MUTATIONS.SET_PRODUCTS, products);
-      context.state.products.forEach(async product => {
-        const [vat, err] = await of(
-          fetcher(`${BILLING_API_URL}/api/product/${product.id}/vat`, {
-            method: "GET"
-          })
-        );
-        if (err) {
-          console.error(err);
-          return;
-        }
-        context.commit(MUTATIONS.SET_VAT_FOR_PRODUCT, {
-          product: product,
-          vat: vat
-        });
-      });
+      const vatProducts = await Promise.all(
+        context.state.products.map(async product => {
+          const [vat, err] = await of(
+            fetcher(`${BILLING_API_URL}/api/product/${product.id}/vat`, {
+              method: "GET"
+            })
+          );
+          if (err) {
+            console.error(err);
+            return;
+          }
+          return {
+            ...product,
+            vat: vat[0]
+          };
+        })
+      );
+      context.commit(MUTATIONS.SET_PRODUCTS, vatProducts);
     },
     [ACTIONS.SET_USER]: async (context, payload) => {
       if (!payload) {
@@ -129,9 +152,19 @@ export default new Vuex.Store<State>({
     [ACTIONS.ADD_PRODUCT_TO_CART]: (context, payload: Product) => {
       context.commit(MUTATIONS.ADD_PRODUCT_TO_CART, payload);
     },
+    [ACTIONS.SUBSTRACT_PRODUCT_FROM_CART]: (context, payload: Product) => {
+      context.commit(MUTATIONS.SUBSTRACT_PRODUCT_FROM_CART, payload);
+      const product = context.state.cart?.products.find(
+        p => p.product.id === payload.id
+      );
+      if (product && product.quantity <= 0) {
+        context.commit(MUTATIONS.REMOVE_PRODUCT_FROM_CART, payload);
+      }
+    },
     [ACTIONS.REMOVE_PRODUCT_FROM_CART]: (context, payload: Product) => {
-      context.commit(MUTATIONS.ADD_PRODUCT_TO_CART, payload);
+      context.commit(MUTATIONS.REMOVE_PRODUCT_FROM_CART, payload);
     }
   },
-  modules: {}
+  modules: {},
+  plugins: [vuexLocal.plugin]
 });

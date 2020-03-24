@@ -60,9 +60,6 @@ export default {
       bgColor: `bg-${this.$props.product.color}-500`,
       textColor: `text-${this.$props.product.color}-500`
     };
-  },
-  mounted() {
-    console.log("product", this.$props.product.product);
   }
 };
 </script>

@@ -27,7 +27,7 @@
           'text-red-500': page === 'Cart',
           'border-red-500': page === 'Cart'
         }"
-        href="cart"
+        href="/cart"
       >
         Cart
       </a>

@@ -31,7 +31,7 @@ export const isUser = (user: any): user is User =>
 
 export type Cart = {
   createdAt: Date;
-  products: { product: Product; quantity: number }[];
+  products: { product: Product; quantity: number; index: number }[];
 };
 
 export type State = {
