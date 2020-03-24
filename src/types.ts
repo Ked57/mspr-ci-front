@@ -6,7 +6,7 @@ export type Product = {
   category: string;
   color?: string;
   logoUrl: string;
-  vatType: string;
+  vat?: Vat;
 };
 
 export const isProduct = (product: any): product is Product =>
@@ -38,4 +38,9 @@ export type State = {
   user?: User;
   cart?: Cart;
   products: Product[];
+};
+
+export type Vat = {
+  type: string;
+  percentage: number;
 };

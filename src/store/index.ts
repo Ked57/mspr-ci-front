@@ -1,14 +1,14 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import { of } from "await-of";
-import { State, Product, User } from "@/types";
+import { State, Product, User, Vat } from "@/types";
 import { MUTATIONS } from "./mutations-definition";
 import { ACTIONS } from "./actions-definition";
 import { mock } from "@/mock/mock";
 
 const CART_API_URL = "https://cart.louisperdereau.fr";
 const USER_API_URL = "https://user.louisperdereau.fr";
-// const BILLING_API_URL = "https://billing.louisperdereau.fr";
+const BILLING_API_URL = "https://billing.louisperdereau.fr";
 
 const useMock = true;
 const fetcher = useMock
@@ -61,6 +61,15 @@ export default new Vuex.Store<State>({
       state.cart.products = [
         ...state.cart.products.filter(p => p.product.name !== payload.name)
       ];
+    },
+    [MUTATIONS.SET_VAT_FOR_PRODUCT]: (
+      state,
+      payload: { product: Product; vat: Vat }
+    ) => {
+      state.products = [
+        ...state.products,
+        { ...payload.product, vat: payload.vat }
+      ];
     }
   },
   actions: {
@@ -73,6 +82,21 @@ export default new Vuex.Store<State>({
         return;
       }
       context.commit(MUTATIONS.SET_PRODUCTS, products);
+      context.state.products.forEach(async product => {
+        const [vat, err] = await of(
+          fetcher(`${BILLING_API_URL}/api/product/${product.id}/vat`, {
+            method: "GET"
+          })
+        );
+        if (err) {
+          console.error(err);
+          return;
+        }
+        context.commit(MUTATIONS.SET_VAT_FOR_PRODUCT, {
+          product: product,
+          vat: vat
+        });
+      });
     },
     [ACTIONS.SET_USER]: async (context, payload) => {
       if (!payload) {
