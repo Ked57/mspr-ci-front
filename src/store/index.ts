@@ -11,7 +11,7 @@ const CART_API_URL = "https://cart.louisperdereau.fr";
 const USER_API_URL = "https://user.louisperdereau.fr";
 const BILLING_API_URL = "https://billing.louisperdereau.fr";
 
-const useMock = true;
+const useMock = process.env.NODE_ENV === "test";
 const fetcher = useMock
   ? async (url: string, options?: RequestInit) => {
       const method = options?.method || "";
