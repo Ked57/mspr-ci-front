@@ -101,7 +101,14 @@ export default new Vuex.Store<State>({
         console.error(err);
         return;
       }
-      context.commit(MUTATIONS.SET_PRODUCTS, products);
+      const productColors = ["red", "blue", "orange"];
+      context.commit(
+        MUTATIONS.SET_PRODUCTS,
+        products.map((p: Product) => ({
+          ...p,
+          color: productColors[Math.floor(Math.random() * 3)]
+        }))
+      );
       const vatProducts = await Promise.all(
         context.state.products.map(async product => {
           const [vat, err] = await of(
