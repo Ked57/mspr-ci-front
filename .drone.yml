@@ -41,6 +41,8 @@ steps:
       tags:
         - ${DRONE_TAG}
         - latest
+    when:
+      event: tag
     depends_on: [build]
   - name: deploy
     image: pabloclsn/kubectl-docker:latest
@@ -51,4 +53,6 @@ steps:
     environment:
       KUBE_CONFIG:
         from_secret: KUBE_CONFIG
+    when:
+      event: tag
     depends_on: [docker]
