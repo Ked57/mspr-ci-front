@@ -18,7 +18,7 @@
             </div>
           </div>
         </div>
-        <a href="/cart" v-on:click="onAddToCartClicked">
+        <a href="/#/cart" v-on:click="onAddToCartClicked">
           <div
             class="py-8 bg-grey-lighter hover:bg-grey-light text-indigo-darker rounded rounded-t-none text-center uppercase font-bold flex items-center justify-center"
           >

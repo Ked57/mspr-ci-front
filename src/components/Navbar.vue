@@ -17,7 +17,7 @@
           'text-red-500': page === 'Products',
           'border-red-500': page === 'Products'
         }"
-        href="/products"
+        href="/#/products"
       >
         Products
       </a>
@@ -27,7 +27,7 @@
           'text-red-500': page === 'Cart',
           'border-red-500': page === 'Cart'
         }"
-        href="/cart"
+        href="/#/cart"
       >
         Cart
       </a>
