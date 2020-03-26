@@ -22,6 +22,11 @@ steps:
     commands:
       -  NODE_ENV=test npm run test:unit
     depends_on: [lint]
+  - name: build
+    image: node:12
+    commands:
+      -  npm run build
+    depends_on: [test_unit]
   - name: docker
     image: banzaicloud/drone-kaniko
     settings:
@@ -36,7 +41,7 @@ steps:
       tags:
         - ${DRONE_TAG}
         - latest
-    depends_on: [test_unit]
+    depends_on: [build]
   - name: deploy
     image: pabloclsn/kubectl-docker:latest
     commands:
