@@ -12,16 +12,16 @@ steps:
     commands:
       - npm run lint
     depends_on: [install_dependencies]
-  - name: test_e2e
-    image: node:12
-    commands:
-      - NODE_ENV=test npm run test:e2e
-    depends_on: [install_dependencies]
+  # - name: test_e2e
+  #   image: node:12
+  #   commands:
+  #     - NODE_ENV=test npm run test:e2e
+  #   depends_on: [install_dependencies]
   - name: test_unit
     image: node:12
     commands:
       -  NODE_ENV=test npm run test:unit
-    depends_on: [test_e2e]
+    depends_on: [lint]
   - name: docker
     image: banzaicloud/drone-kaniko
     settings:
