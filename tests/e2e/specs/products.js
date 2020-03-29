@@ -4,12 +4,12 @@ const url = Cypress.env("FRONT_URL");
 describe("Products", () => {
   it("Check if products exist", () => {
     cy.visit(`${url}/`);
-    cy.get('a[href="/#/products"]').click();
+    cy.get('a[href="/products"]').click();
     cy.get("div.items-center").children("div");
   });
   it("Click on products", () => {
     cy.visit(`${url}/`);
-    cy.get('a[href="/#/products"]').click();
+    cy.get('a[href="/products"]').click();
     cy.get("div.items-center")
       .children("div")
       .first()
@@ -18,7 +18,7 @@ describe("Products", () => {
   });
   it("Add product in cart", () => {
     cy.visit(`${url}/`);
-    cy.get('a[href="/#/products"]').click();
+    cy.get('a[href="/products"]').click();
     cy.get("div.items-center")
       .children("div")
       .first()
