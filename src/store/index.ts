@@ -11,7 +11,7 @@ const CART_API_URL = "https://cart.louisperdereau.fr";
 const USER_API_URL = "https://user.louisperdereau.fr";
 const BILLING_API_URL = "https://billing.louisperdereau.fr";
 
-const useMock = true;
+const useMock = process.env.NODE_ENV === "test";
 const fetcher = useMock
   ? async (url: string, options?: RequestInit) => {
       const method = options?.method || "";
@@ -101,7 +101,14 @@ export default new Vuex.Store<State>({
         console.error(err);
         return;
       }
-      context.commit(MUTATIONS.SET_PRODUCTS, products);
+      const productColors = ["red", "blue", "orange"];
+      context.commit(
+        MUTATIONS.SET_PRODUCTS,
+        products.map((p: Product) => ({
+          ...p,
+          color: productColors[Math.floor(Math.random() * 3)]
+        }))
+      );
       const vatProducts = await Promise.all(
         context.state.products.map(async product => {
           const [vat, err] = await of(
@@ -115,7 +122,7 @@ export default new Vuex.Store<State>({
           }
           return {
             ...product,
-            vat: vat[0]
+            vat
           };
         })
       );
@@ -126,7 +133,6 @@ export default new Vuex.Store<State>({
         console.error({ message: "Invalid input" });
         return;
       }
-      console.log("payload", payload);
       const [user, err] = await of(
         fetcher(`${USER_API_URL}/user/${payload}`, { method: "GET" })
       );

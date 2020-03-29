@@ -34,7 +34,10 @@
               <td class="py-4 px-6 border-b border-grey-light">
                 {{
                   parseFloat(
-                    productItem.product.price * productItem.quantity
+                    productItem.product.price * productItem.quantity +
+                      (productItem.product.price *
+                        productItem.product.vat.percent) /
+                        100
                   ).toFixed(2)
                 }}
                 €
