@@ -12,21 +12,21 @@ steps:
     commands:
       - npm run lint
     depends_on: [install_dependencies]
-  # - name: test_e2e
-  #   image: node:12
-  #   commands:
-  #     - NODE_ENV=test npm run test:e2e
-  #   depends_on: [install_dependencies]
   - name: test_unit
     image: node:12
     commands:
       -  NODE_ENV=test npm run test:unit
     depends_on: [lint]
+  - name: test_e2e
+    image: cypress/included:3.8.3
+    commands:
+      - NODE_ENV=test npm run test:e2e
+    depends_on: [lint]
   - name: build
     image: node:12
     commands:
       -  npm run build
-    depends_on: [test_unit]
+    depends_on: [test_unit,test_e2e]
   - name: docker
     image: banzaicloud/drone-kaniko
     settings:
