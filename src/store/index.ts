@@ -122,7 +122,7 @@ export default new Vuex.Store<State>({
           }
           return {
             ...product,
-            vat: vat[0]
+            vat
           };
         })
       );
@@ -133,7 +133,6 @@ export default new Vuex.Store<State>({
         console.error({ message: "Invalid input" });
         return;
       }
-      console.log("payload", payload);
       const [user, err] = await of(
         fetcher(`${USER_API_URL}/user/${payload}`, { method: "GET" })
       );
